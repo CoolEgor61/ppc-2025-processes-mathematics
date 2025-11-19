@@ -34,7 +34,7 @@ bool PetrovEFindMaxInColumnsMatrixSEQ::RunImpl() {
 
   using MatrixElemType = std::remove_reference_t<decltype(matrix[0])>;
 
-  std::size_t i, j;
+  int i, j;
 
   res.resize(m);
   MatrixElemType max;

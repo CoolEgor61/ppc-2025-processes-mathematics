@@ -40,7 +40,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
   int ProcNum, ProcRank;
   MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  std::size_t i, j;
+  int i, j;
   MatrixElemType max;
   res.resize(m);
   int ColNumPerProc = m / ProcNum;
