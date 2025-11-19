@@ -1,0 +1,69 @@
+#include <gtest/gtest.h>
+#include <random>
+#include <algorithm>
+
+#include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
+#include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
+#include "petrov_e_find_max_in_columns_matrix/seq/include/ops_seq.hpp"
+#include "util/include/perf_test_util.hpp"
+
+namespace petrov_e_find_max_in_columns_matrix {
+
+class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<InType, OutType> {
+  InType input_data_;
+
+  void SetUp() override {
+    std::size_t n = 13000, m = 13000;
+    std::get<0>(input_data_) = n;
+    std::get<1>(input_data_) = m;
+    std::size_t i;
+    std::size_t limit = n * m;
+    auto& matrix = std::get<2>(input_data_);
+    matrix.clear();
+    matrix.resize(limit);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<double> uniform_dis(-1e-4, 1e-4);
+    for (i = 0; i < limit; i++) {
+     matrix[i] = uniform_dis(gen);
+    }
+  }
+
+  bool CheckTestOutputData(OutType &output_data) final {
+    std::size_t n = std::get<0>(input_data_);
+    std::size_t m = std::get<1>(input_data_);
+    auto& matrix = std::get<2>(input_data_);
+    std::size_t i, j;
+
+    if (m != output_data.size()) {
+      return false;
+    }
+
+    for (i = 0; i < m; i++) {
+      for (j = 0; j < n; j++){
+        if (output_data[i] < matrix[i*n+j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  InType GetTestInputData() final {
+    return input_data_;
+  }
+};
+
+TEST_P(PetrovERunPerfFindMaxInColumnsMatrix, RunPerfModes) {
+  ExecuteTest(GetParam());
+}
+
+const auto kAllPerfTasks =
+    ppc::util::MakeAllPerfTasks<InType, PetrovEFindMaxInColumnsMatrixMPI, PetrovEFindMaxInColumnsMatrixSEQ>(PPC_SETTINGS_petrov_e_find_max_in_columns_matrix);
+
+const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
+
+const auto kPerfTestName = PetrovERunPerfFindMaxInColumnsMatrix::CustomPerfTestName;
+
+INSTANTIATE_TEST_SUITE_P(RunModeTests, PetrovERunPerfFindMaxInColumnsMatrix, kGtestValues, kPerfTestName);
+}  // namespace petrov_e_find_max_in_columns_matrix
