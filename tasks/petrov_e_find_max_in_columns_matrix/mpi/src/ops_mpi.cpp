@@ -82,7 +82,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
   int n_proc_size = n * proc_size;
   proc_data.resize(n_proc_size);
 
-  MPI_Scatterv(matrix.data(), sendcounts.data(), displssend.data(), MPIMatrixElemType, proc_data.data(), n_proc_size, MPIMatrixElemType, 0, MPI_COMM_WORLD);
+  MPI_Scatterv(matrix.data(), sendcounts.data(), displssend.data(), mpi_matrix_elem_type, proc_data.data(), n_proc_size, mpi_matrix_elem_type, 0, MPI_COMM_WORLD);
   proc_res.resize(proc_size);
 
   for (i = 0; std::cmp_less(i, proc_size); i++) {
@@ -93,7 +93,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
     proc_res[i]=max;
   }
 
-  MPI_Gatherv(proc_res.data(), proc_size, MPIMatrixElemType, res.data(), recvcounts.data(), displsrecv.data(), MPIMatrixElemType, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(proc_res.data(), proc_size, mpi_matrix_elem_type, res.data(), recvcounts.data(), displsrecv.data(), mpi_matrix_elem_type, 0, MPI_COMM_WORLD);
 
   return true;
 }
