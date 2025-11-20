@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <cfloat>
+#include <cstddef>
+#include <string>
 #include <tuple>
 #include <vector>
-#include <cfloat>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"

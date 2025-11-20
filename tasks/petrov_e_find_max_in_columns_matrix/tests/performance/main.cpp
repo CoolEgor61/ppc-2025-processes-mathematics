@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
-#include <random>
+
 #include <algorithm>
+#include <random>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
@@ -17,7 +18,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     int m = 13000;
     std::get<0>(input_data_) = n;
     std::get<1>(input_data_) = m;
-    int i;
+    int i = 0 ;
     int limit = n * m;
     auto& matrix = std::get<2>(input_data_);
     matrix.clear();
@@ -34,10 +35,10 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     int n = std::get<0>(input_data_);
     int m = std::get<1>(input_data_);
     auto& matrix = std::get<2>(input_data_);
-    int i;
-    int j;
+    int i = 0 ;
+    int j = 0;
 
-    if (m != static_cast<int>(output_data.size())) {
+    if (std::cmp_not_equal(m, static_cast<int>(output_data.size()))) {
       return false;
     }
 
