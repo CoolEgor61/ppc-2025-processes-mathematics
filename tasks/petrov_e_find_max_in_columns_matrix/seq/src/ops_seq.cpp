@@ -1,8 +1,8 @@
 #include "petrov_e_find_max_in_columns_matrix/seq/include/ops_seq.hpp"
 
-#include <vector>
-#include <type_traits>
 #include <algorithm>
+#include <type_traits>
+#include <vector>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 
@@ -34,7 +34,8 @@ bool PetrovEFindMaxInColumnsMatrixSEQ::RunImpl() {
 
   using MatrixElemType = std::remove_reference_t<decltype(matrix[0])>;
 
-  int i, j;
+  int i;
+  int j;
 
   res.resize(m);
   MatrixElemType max = NAN;

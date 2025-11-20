@@ -1,9 +1,9 @@
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
 
-#include <vector>
-#include <type_traits>
-#include <mpi.h>
 #include <algorithm>
+#include <mpi.h>
+#include <type_traits>
+#include <vector>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 
@@ -38,7 +38,8 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
     return false;
   }
   OutType proc_res;
-  int ProcNum = 0, ProcRank = 0;
+  int ProcNum = 0;
+  int ProcRank = 0;
   MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   int i = 0;

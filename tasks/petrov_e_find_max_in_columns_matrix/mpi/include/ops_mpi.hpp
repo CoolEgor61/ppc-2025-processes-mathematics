@@ -9,27 +9,23 @@ namespace petrov_e_find_max_in_columns_matrix {
 
 template <typename MatrixElemType>
   MPI_Datatype GetMPIDatatype() {
-    MPI_Datatype res;
+    MPI_Datatype res = MPI_DATATYPE_NULL;
     if (std::is_same_v<MatrixElemType, char>) {
       res = MPI_CHAR;
     } else if (std::is_same_v<MatrixElemType, unsigned char>) {
       res = MPI_UNSIGNED_CHAR;
-    } else if (std::is_same_v<MatrixElemType, short>) {
+    } else if (std::is_same_v<MatrixElemType, int16>) {
       res = MPI_SHORT;
-    } else if (std::is_same_v<MatrixElemType, unsigned short>) {
+    } else if (std::is_same_v<MatrixElemType, uint16>) {
       res = MPI_UNSIGNED_SHORT;
     } else if (std::is_same_v<MatrixElemType, int>) {
       res = MPI_INT;
     } else if (std::is_same_v<MatrixElemType, unsigned>) {
       res = MPI_UNSIGNED;
-    } else if (std::is_same_v<MatrixElemType, long>) {
+    } else if (std::is_same_v<MatrixElemType, int64>) {
       res = MPI_LONG;
-    } else if (std::is_same_v<MatrixElemType, unsigned long>) {
+    } else if (std::is_same_v<MatrixElemType, uint64>) {
       res = MPI_UNSIGNED_LONG;
-    } else if (std::is_same_v<MatrixElemType, long long>) {
-      res = MPI_LONG_LONG;
-    } else if (std::is_same_v<MatrixElemType, unsigned long long>) {
-      res = MPI_UNSIGNED_LONG_LONG;
     } else if (std::is_same_v<MatrixElemType, float>) {
       res = MPI_FLOAT;
     } else if (std::is_same_v<MatrixElemType, double>) {
@@ -38,7 +34,7 @@ template <typename MatrixElemType>
       res = MPI_LONG_DOUBLE;
     } else if (std::is_same_v<MatrixElemType, bool>) {
       res = MPI_C_BOOL;
-    } else res = MPI_DATATYPE_NULL;
+    }
     return res;
   }
 
