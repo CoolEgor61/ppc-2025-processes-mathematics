@@ -15,15 +15,15 @@ PetrovEFindMaxInColumnsMatrixMPI::PetrovEFindMaxInColumnsMatrixMPI(const InType 
 }
 
 bool PetrovEFindMaxInColumnsMatrixMPI::ValidationImpl() {
-  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == std::get<2>(GetInput()).size()) && (GetOutput().empty());
+  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == (int)std::get<2>(GetInput()).size()) && (GetOutput().empty());
 }
 
 bool PetrovEFindMaxInColumnsMatrixMPI::PreProcessingImpl() {
-  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == std::get<2>(GetInput()).size());
+  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == (int)std::get<2>(GetInput()).size());
 }
 
 bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
-  if ((std::get<0>(GetInput()) * std::get<1>(GetInput()) != std::get<2>(GetInput()).size())) {
+  if ((std::get<0>(GetInput()) * std::get<1>(GetInput()) != (int)std::get<2>(GetInput()).size())) {
     return false;
   }
 
