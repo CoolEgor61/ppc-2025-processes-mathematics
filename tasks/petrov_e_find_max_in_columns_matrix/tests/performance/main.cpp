@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <random>
+#include <utility>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"

@@ -89,7 +89,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
   proc_res.resize(proc_size);
 
   for (i = 0; std::cmp_less(i, proc_size); i++) {
-    max = proc_data[i * n];
+    max = proc_data[static_cast<int>(i * n)];
     for (j = 1; j < n; j++) {
       max = std::max(proc_data[(i * n) + j], max);
     }

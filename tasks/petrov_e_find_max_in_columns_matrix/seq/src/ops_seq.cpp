@@ -1,11 +1,11 @@
 #include "petrov_e_find_max_in_columns_matrix/seq/include/ops_seq.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <type_traits>
 #include <vector>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
-#include "util/include/util.hpp"
 
 namespace petrov_e_find_max_in_columns_matrix {
 
