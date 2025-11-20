@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <mpi.h>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
@@ -14,17 +15,17 @@ template <typename MatrixElemType>
       res = MPI_CHAR;
     } else if (std::is_same_v<MatrixElemType, unsigned char>) {
       res = MPI_UNSIGNED_CHAR;
-    } else if (std::is_same_v<MatrixElemType, int16>) {
+    } else if (std::is_same_v<MatrixElemType, int16_t>) {
       res = MPI_SHORT;
-    } else if (std::is_same_v<MatrixElemType, uint16>) {
+    } else if (std::is_same_v<MatrixElemType, uint16_t>) {
       res = MPI_UNSIGNED_SHORT;
     } else if (std::is_same_v<MatrixElemType, int>) {
       res = MPI_INT;
     } else if (std::is_same_v<MatrixElemType, unsigned>) {
       res = MPI_UNSIGNED;
-    } else if (std::is_same_v<MatrixElemType, int64>) {
+    } else if (std::is_same_v<MatrixElemType, int64_t>) {
       res = MPI_LONG;
-    } else if (std::is_same_v<MatrixElemType, uint64>) {
+    } else if (std::is_same_v<MatrixElemType, uint64_t>) {
       res = MPI_UNSIGNED_LONG;
     } else if (std::is_same_v<MatrixElemType, float>) {
       res = MPI_FLOAT;
