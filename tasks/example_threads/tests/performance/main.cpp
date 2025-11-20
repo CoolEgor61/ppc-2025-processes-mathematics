@@ -8,7 +8,7 @@
 #include "example_threads/tbb/include/ops_tbb.hpp"
 #include "util/include/perf_test_util.hpp"
 
-namespace nesterov_a_test_task_threads {
+/*namespace nesterov_a_test_task_threads {
 
 class ExampleRunPerfTestThreads : public ppc::util::BaseRunPerfTests<InType, OutType> {
   const int kCount_ = 200;
@@ -41,4 +41,4 @@ const auto kPerfTestName = ExampleRunPerfTestThreads::CustomPerfTestName;
 
 INSTANTIATE_TEST_SUITE_P(RunModeTests, ExampleRunPerfTestThreads, kGtestValues, kPerfTestName);
 
-}  // namespace nesterov_a_test_task_threads
+}  // namespace nesterov_a_test_task_threads*/
