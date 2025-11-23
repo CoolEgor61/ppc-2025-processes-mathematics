@@ -54,7 +54,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     }
 
     for (i = 0; i < m; i++) {
-      if (output_data[i] != *std::max_element(matrix.begin() + static_cast<difference_type>(i * n), matrix.begin() + static_cast<difference_type>(n) + static_cast<difference_type>(i * n))) {
+      if (output_data[i] != *std::max_element(matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(i * n), matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(n) + static_cast<std::_Bit_const_iterator::difference_type>(i * n))) {
         return false;
       }
     }
