@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iterator>
 #include <string>
 #include <utility>
 #include <vector>
@@ -56,9 +55,9 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     }
 
     for (i = 0; i < m; i++) {
-      using difference_type = typename OutType::difference_type;
-      auto start = matrix.begin() + static_cast<difference_type>(i) * static_cast<difference_type>(n);
-      auto end = start + static_cast<difference_type>(n);
+      using DifferenceType = typename OutType::difference_type;
+      auto start = matrix.begin() + static_cast<DifferenceType>(i) * static_cast<DifferenceType>(n);
+      auto end = start + static_cast<DifferenceType>(n);
       auto element = *std::max_element(start, end);
       if (output_data[i] != element) {
         return false;
