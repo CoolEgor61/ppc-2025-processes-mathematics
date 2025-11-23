@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <cstddef>
 #include <fstream>
 #include <iterator>
 #include <string>
@@ -57,8 +56,9 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     }
 
     for (i = 0; i < m; i++) {
-      auto start = matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(i) * static_cast<std::_Bit_const_iterator::difference_type>(n);
-      auto end = matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(n) + static_cast<std::_Bit_const_iterator::difference_type>(i) * static_cast<std::_Bit_const_iterator::difference_type>(n);
+      using difference_type = typename OutType::difference_type;
+      auto start = matrix.begin() + static_cast<difference_type>(i) * static_cast<difference_type>(n);
+      auto end = start + static_cast<difference_type>(n);
       auto element = *std::max_element(start, end);
       if (output_data[i] != element) {
         return false;
