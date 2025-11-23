@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <fstream>
+#include <iterator>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "petrov_e_find_max_in_columns_matrix/common/include/common.hpp"
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
@@ -44,10 +46,10 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
   }
 
   bool CheckTestOutputData(OutType &output_data) final {
-    std::size_t n = std::get<0>(input_data_);
-    std::size_t m = std::get<1>(input_data_);
+    int n = std::get<0>(input_data_);
+    int m = std::get<1>(input_data_);
     auto& matrix = std::get<2>(input_data_);
-    std::size_t i = 0;
+    int i = 0;
 
     if (std::cmp_not_equal(m, static_cast<int>(output_data.size()))) {
       return false;
@@ -55,7 +57,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
 
     for (i = 0; i < m; i++) {
       auto start = matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(i * n);
-      auto end = matrix.begin() + n + static_cast<std::_Bit_const_iterator::difference_type>(i * n);
+      auto end = matrix.begin() + static_cast<std::_Bit_const_iterator::difference_type>(n) + static_cast<std::_Bit_const_iterator::difference_type>(i * n);
       auto element = *std::max_element(start, end);
       if (output_data[i] != element) {
         return false;
