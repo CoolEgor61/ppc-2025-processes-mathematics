@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <random>
+#include <algorithm>
+#include <fstream>
 #include <string>
 #include <utility>
 
@@ -8,6 +9,7 @@
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
 #include "petrov_e_find_max_in_columns_matrix/seq/include/ops_seq.hpp"
 #include "util/include/perf_test_util.hpp"
+#include "util/include/util.hpp"
 
 namespace petrov_e_find_max_in_columns_matrix {
 
@@ -52,7 +54,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     }
 
     for (i = 0; i < m; i++) {
-      if (output_data[i] != *std::max_element(matrix.begin() + i * n, matrix.begin() + n + i * n)) {
+      if (output_data[i] != *std::max_element(matrix.begin() + static_cast<difference_type>(i * n), matrix.begin() + static_cast<difference_type>(n) + static_cast<difference_type>(i * n))) {
         return false;
       }
     }

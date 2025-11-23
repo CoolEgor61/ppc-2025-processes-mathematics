@@ -1,6 +1,7 @@
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <cfloat>
 #include <cmath>
 #include <mpi.h>
 #include <type_traits>
@@ -57,7 +58,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
       flag = 0;
     }
     
-  int start = proc_rank * col_num_per_proc + std::min(proc_rank, col_num_wo_proc);
+  int start = (proc_rank * col_num_per_proc) + std::min(proc_rank, col_num_wo_proc);
   int end = start + col_num_per_proc + flag;
 
   OutType proc_res(m, -DBL_MAX);
