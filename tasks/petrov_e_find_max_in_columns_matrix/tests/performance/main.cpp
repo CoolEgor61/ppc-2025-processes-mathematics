@@ -47,7 +47,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
     int n = std::get<0>(input_data_);
     int m = std::get<1>(input_data_);
     auto& matrix = std::get<2>(input_data_);
-    std::size_t i = 0;
+    int i = 0;
 
     if (std::cmp_not_equal(m, static_cast<int>(output_data.size()))) {
       return false;
