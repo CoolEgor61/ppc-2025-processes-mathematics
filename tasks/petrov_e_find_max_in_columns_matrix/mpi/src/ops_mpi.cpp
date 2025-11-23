@@ -1,9 +1,10 @@
 #include "petrov_e_find_max_in_columns_matrix/mpi/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
 #include <cfloat>
 #include <cmath>
-#include <mpi.h>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -19,7 +20,8 @@ PetrovEFindMaxInColumnsMatrixMPI::PetrovEFindMaxInColumnsMatrixMPI(const InType 
 }
 
 bool PetrovEFindMaxInColumnsMatrixMPI::ValidationImpl() {
-  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == static_cast<int>(std::get<2>(GetInput()).size())) && (GetOutput().empty());
+  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == static_cast<int>(std::get<2>(GetInput()).size())) &&
+         (GetOutput().empty());
 }
 
 bool PetrovEFindMaxInColumnsMatrixMPI::PreProcessingImpl() {
@@ -53,11 +55,11 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
   int flag = 0;
 
   if (proc_rank < col_num_wo_proc) {
-      flag = 1;
-    } else {
-      flag = 0;
-    }
-    
+    flag = 1;
+  } else {
+    flag = 0;
+  }
+
   int start = (proc_rank * col_num_per_proc) + std::min(proc_rank, col_num_wo_proc);
   int end = start + col_num_per_proc + flag;
 
@@ -68,7 +70,7 @@ bool PetrovEFindMaxInColumnsMatrixMPI::RunImpl() {
     for (j = 1; j < n; j++) {
       max = std::max(matrix[(i * n) + j], max);
     }
-    proc_res[i]=max;
+    proc_res[i] = max;
   }
 
   MPI_Allreduce(proc_res.data(), res.data(), m, mpi_matrix_elem_type, MPI_MAX, MPI_COMM_WORLD);

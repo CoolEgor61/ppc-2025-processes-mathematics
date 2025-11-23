@@ -28,7 +28,7 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
       int limit = n * m;
       std::get<0>(input_data_) = n;
       std::get<1>(input_data_) = m;
-      auto& matrix = std::get<2>(input_data_);
+      auto &matrix = std::get<2>(input_data_);
       matrix.clear();
       matrix.resize(limit);
       int i = 0;
@@ -41,13 +41,13 @@ class PetrovERunPerfFindMaxInColumnsMatrix : public ppc::util::BaseRunPerfTests<
         in >> tmp;
       }
       in.close();
-    } 
+    }
   }
 
   bool CheckTestOutputData(OutType &output_data) final {
     int n = std::get<0>(input_data_);
     int m = std::get<1>(input_data_);
-    auto& matrix = std::get<2>(input_data_);
+    auto &matrix = std::get<2>(input_data_);
     int i = 0;
 
     if (std::cmp_not_equal(m, static_cast<int>(output_data.size()))) {
@@ -76,7 +76,8 @@ TEST_P(PetrovERunPerfFindMaxInColumnsMatrix, RunPerfModes) {
 }
 
 const auto kAllPerfTasks =
-    ppc::util::MakeAllPerfTasks<InType, PetrovEFindMaxInColumnsMatrixMPI, PetrovEFindMaxInColumnsMatrixSEQ>(PPC_SETTINGS_petrov_e_find_max_in_columns_matrix);
+    ppc::util::MakeAllPerfTasks<InType, PetrovEFindMaxInColumnsMatrixMPI, PetrovEFindMaxInColumnsMatrixSEQ>(
+        PPC_SETTINGS_petrov_e_find_max_in_columns_matrix);
 
 const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
 

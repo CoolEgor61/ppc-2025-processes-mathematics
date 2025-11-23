@@ -16,7 +16,8 @@ PetrovEFindMaxInColumnsMatrixSEQ::PetrovEFindMaxInColumnsMatrixSEQ(const InType 
 }
 
 bool PetrovEFindMaxInColumnsMatrixSEQ::ValidationImpl() {
-  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == static_cast<int>(std::get<2>(GetInput()).size())) && (GetOutput().empty());
+  return (std::get<0>(GetInput()) * std::get<1>(GetInput()) == static_cast<int>(std::get<2>(GetInput()).size())) &&
+         (GetOutput().empty());
 }
 
 bool PetrovEFindMaxInColumnsMatrixSEQ::PreProcessingImpl() {
@@ -46,11 +47,10 @@ bool PetrovEFindMaxInColumnsMatrixSEQ::RunImpl() {
     for (j = 1; j < n; j++) {
       max = std::max(matrix[(i * n) + j], max);
     }
-    res[i]=max;
+    res[i] = max;
   }
 
   return true;
-
 }
 
 bool PetrovEFindMaxInColumnsMatrixSEQ::PostProcessingImpl() {
