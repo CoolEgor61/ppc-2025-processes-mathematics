@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <bit>
+#include <cstddef>
 #include <fstream>
 #include <iterator>
 #include <string>
