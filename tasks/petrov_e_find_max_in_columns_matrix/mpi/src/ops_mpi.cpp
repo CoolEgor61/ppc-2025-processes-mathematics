@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cfloat>
 #include <cmath>
-#include <numeric>
+#include <limits>
 #include <type_traits>
 #include <utility>
 #include <vector>
