@@ -86,7 +86,7 @@ bool PetrovEMyAllreduceMPI::RunImpl() {
     proc_res[i] = max;
   }
 
-  MPI_MyAllreduce(proc_res.data(), res.data(), m, mpi_matrix_elem_type, MPI_MAX, MPI_COMM_WORLD);
+  MpiMyAllreduce(proc_res.data(), res.data(), m, mpi_matrix_elem_type, MPI_MAX, MPI_COMM_WORLD);
 
   return true;
 }
