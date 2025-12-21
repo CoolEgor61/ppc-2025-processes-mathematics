@@ -76,8 +76,7 @@ TEST_P(PetrovERunPerfAllreduceFindMaxInColumnsMatrix, RunPerfModes) {
 }
 
 const auto kAllPerfTasks =
-    ppc::util::MakeAllPerfTasks<InType, PetrovEMyAllreduceMPI, PetrovEAllreduceMPI>(
-        PPC_SETTINGS_petrov_e_allreduce);
+    ppc::util::MakeAllPerfTasks<InType, PetrovEMyAllreduceMPI, PetrovEAllreduceMPI>(PPC_SETTINGS_petrov_e_allreduce);
 
 const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
 

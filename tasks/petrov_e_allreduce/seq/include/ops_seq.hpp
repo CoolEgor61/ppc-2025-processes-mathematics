@@ -45,7 +45,7 @@ class PetrovEAllreduceMPI : public BaseTask {
       res = MPI_C_BOOL;
     }
     return res;
-}
+  }
 
  private:
   bool ValidationImpl() override;

@@ -10,194 +10,276 @@
 
 namespace petrov_e_allreduce {
 
-inline void operation(void* dest, void* src, int count, MPI_Datatype datatype, MPI_Op op)
-{
+inline void operation(void *dest, void *src, int count, MPI_Datatype datatype, MPI_Op op) {
   // Ops: MPI_SUM, MPI_PROD, MPI_MAX, MPI_MIN
   if (op == MPI_SUM) {
     if (datatype == MPI_UNSIGNED_CHAR) {
-      unsigned char* d = (unsigned char*)dest;
-      unsigned char* s = (unsigned char*)src;
-      for (int i = 0; i < count; i++) d[i] += s[i];
+      unsigned char *d = (unsigned char *)dest;
+      unsigned char *s = (unsigned char *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
     } else if (datatype == MPI_SHORT) {
-      int16_t* d = (int16_t*)dest;
-      int16_t* s = (int16_t*)src;
-      for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_UNSIGNED_SHORT) {
-       uint16_t* d = (uint16_t*)dest;
-       uint16_t* s = (uint16_t*)src;
-       for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_INT) {
-        int* d = (int*)dest;
-        int* s = (int*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_UNSIGNED) {
-        unsigned* d = (unsigned*)dest;
-        unsigned* s = (unsigned*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_LONG) {
-        int64_t* d = (int64_t*)dest;
-        int64_t* s = (int64_t*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_UNSIGNED_LONG) {
-        uint64_t* d = (uint64_t*)dest;
-        uint64_t* s = (uint64_t*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_FLOAT) {
-        float* d = (float*)dest;
-        float* s = (float*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_DOUBLE) {
-        double* d = (double*)dest;
-        double* s = (double*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
-      } else if (datatype == MPI_LONG_DOUBLE) {
-        long double* d = (long double*)dest;
-        long double* s = (long double*)src;
-        for (int i = 0; i < count; i++) d[i] += s[i];
+      int16_t *d = (int16_t *)dest;
+      int16_t *s = (int16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
       }
-      } else if (op == MPI_PROD) {
-          if (datatype == MPI_UNSIGNED_CHAR) {
-            unsigned char* d = (unsigned char*)dest;
-            unsigned char* s = (unsigned char*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_SHORT) {
-            int16_t* d = (int16_t*)dest;
-            int16_t* s = (int16_t*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_UNSIGNED_SHORT) {
-            uint16_t* d = (uint16_t*)dest;
-            uint16_t* s = (uint16_t*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_INT) {
-            int* d = (int*)dest;
-            int* s = (int*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_UNSIGNED) {
-            unsigned* d = (unsigned*)dest;
-            unsigned* s = (unsigned*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_LONG) {
-            int64_t* d = (int64_t*)dest;
-            int64_t* s = (int64_t*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_UNSIGNED_LONG) {
-            uint64_t* d = (uint64_t*)dest;
-            uint64_t* s = (uint64_t*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_FLOAT) {
-            float* d = (float*)dest;
-            float* s = (float*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_DOUBLE) {
-            double* d = (double*)dest;
-            double* s = (double*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } else if (datatype == MPI_LONG_DOUBLE) {
-            long double* d = (long double*)dest;
-            long double* s = (long double*)src;
-            for (int i = 0; i < count; i++) d[i] *= s[i];
-          } 
-        } else if (op == MPI_MAX) {
-          if (datatype == MPI_UNSIGNED_CHAR) {
-            unsigned char* d = (unsigned char*)dest;
-            unsigned char* s = (unsigned char*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_SHORT) {
-            int16_t* d = (int16_t*)dest;
-            int16_t* s = (int16_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED_SHORT) {
-            uint16_t* d = (uint16_t*)dest;
-            uint16_t* s = (uint16_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_INT) {
-            int* d = (int*)dest;
-            int* s = (int*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED) {
-            unsigned* d = (unsigned*)dest;
-            unsigned* s = (unsigned*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_LONG) {
-            int64_t* d = (int64_t*)dest;
-            int64_t* s = (int64_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED_LONG) {
-            uint64_t* d = (uint64_t*)dest;
-            uint64_t* s = (uint64_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_FLOAT) {
-            float* d = (float*)dest;
-            float* s = (float*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_DOUBLE) {
-            double* d = (double*)dest;
-            double* s = (double*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_LONG_DOUBLE) {
-            long double* d = (long double*)dest;
-            long double* s = (long double*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
-          } else if (datatype == MPI_C_BOOL) {
-            bool* d = (bool*)dest;
-            bool* s = (bool*)src;
-            for (int i = 0; i < count; i++) d[i] = std::max(d[i],s[i]);
+    } else if (datatype == MPI_UNSIGNED_SHORT) {
+      uint16_t *d = (uint16_t *)dest;
+      uint16_t *s = (uint16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
       }
-      } else if (op == MPI_MIN) {
-          if (datatype == MPI_UNSIGNED_CHAR) {
-            unsigned char* d = (unsigned char*)dest;
-            unsigned char* s = (unsigned char*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_SHORT) {
-            int16_t* d = (int16_t*)dest;
-            int16_t* s = (int16_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED_SHORT) {
-            uint16_t* d = (uint16_t*)dest;
-            uint16_t* s = (uint16_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_INT) {
-            int* d = (int*)dest;
-            int* s = (int*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED) {
-            unsigned* d = (unsigned*)dest;
-            unsigned* s = (unsigned*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_LONG) {
-            int64_t* d = (int64_t*)dest;
-            int64_t* s = (int64_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_UNSIGNED_LONG) {
-            uint64_t* d = (uint64_t*)dest;
-            uint64_t* s = (uint64_t*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_FLOAT) {
-            float* d = (float*)dest;
-            float* s = (float*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_DOUBLE) {
-            double* d = (double*)dest;
-            double* s = (double*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_LONG_DOUBLE) {
-            long double* d = (long double*)dest;
-            long double* s = (long double*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
-          } else if (datatype == MPI_C_BOOL) {
-            bool* d = (bool*)dest;
-            bool* s = (bool*)src;
-            for (int i = 0; i < count; i++) d[i] = std::min(d[i],s[i]);
+    } else if (datatype == MPI_INT) {
+      int *d = (int *)dest;
+      int *s = (int *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
       }
+    } else if (datatype == MPI_UNSIGNED) {
+      unsigned *d = (unsigned *)dest;
+      unsigned *s = (unsigned *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
       }
+    } else if (datatype == MPI_LONG) {
+      int64_t *d = (int64_t *)dest;
+      int64_t *s = (int64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
+    } else if (datatype == MPI_UNSIGNED_LONG) {
+      uint64_t *d = (uint64_t *)dest;
+      uint64_t *s = (uint64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
+    } else if (datatype == MPI_FLOAT) {
+      float *d = (float *)dest;
+      float *s = (float *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
+    } else if (datatype == MPI_DOUBLE) {
+      double *d = (double *)dest;
+      double *s = (double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
+    } else if (datatype == MPI_LONG_DOUBLE) {
+      long double *d = (long double *)dest;
+      long double *s = (long double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] += s[i];
+      }
+    }
+  } else if (op == MPI_PROD) {
+    if (datatype == MPI_UNSIGNED_CHAR) {
+      unsigned char *d = (unsigned char *)dest;
+      unsigned char *s = (unsigned char *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_SHORT) {
+      int16_t *d = (int16_t *)dest;
+      int16_t *s = (int16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_UNSIGNED_SHORT) {
+      uint16_t *d = (uint16_t *)dest;
+      uint16_t *s = (uint16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_INT) {
+      int *d = (int *)dest;
+      int *s = (int *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_UNSIGNED) {
+      unsigned *d = (unsigned *)dest;
+      unsigned *s = (unsigned *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_LONG) {
+      int64_t *d = (int64_t *)dest;
+      int64_t *s = (int64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_UNSIGNED_LONG) {
+      uint64_t *d = (uint64_t *)dest;
+      uint64_t *s = (uint64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_FLOAT) {
+      float *d = (float *)dest;
+      float *s = (float *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_DOUBLE) {
+      double *d = (double *)dest;
+      double *s = (double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    } else if (datatype == MPI_LONG_DOUBLE) {
+      long double *d = (long double *)dest;
+      long double *s = (long double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] *= s[i];
+      }
+    }
+  } else if (op == MPI_MAX) {
+    if (datatype == MPI_UNSIGNED_CHAR) {
+      unsigned char *d = (unsigned char *)dest;
+      unsigned char *s = (unsigned char *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_SHORT) {
+      int16_t *d = (int16_t *)dest;
+      int16_t *s = (int16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED_SHORT) {
+      uint16_t *d = (uint16_t *)dest;
+      uint16_t *s = (uint16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_INT) {
+      int *d = (int *)dest;
+      int *s = (int *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED) {
+      unsigned *d = (unsigned *)dest;
+      unsigned *s = (unsigned *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_LONG) {
+      int64_t *d = (int64_t *)dest;
+      int64_t *s = (int64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED_LONG) {
+      uint64_t *d = (uint64_t *)dest;
+      uint64_t *s = (uint64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_FLOAT) {
+      float *d = (float *)dest;
+      float *s = (float *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_DOUBLE) {
+      double *d = (double *)dest;
+      double *s = (double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_LONG_DOUBLE) {
+      long double *d = (long double *)dest;
+      long double *s = (long double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    } else if (datatype == MPI_C_BOOL) {
+      bool *d = (bool *)dest;
+      bool *s = (bool *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::max(d[i], s[i]);
+      }
+    }
+  } else if (op == MPI_MIN) {
+    if (datatype == MPI_UNSIGNED_CHAR) {
+      unsigned char *d = (unsigned char *)dest;
+      unsigned char *s = (unsigned char *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_SHORT) {
+      int16_t *d = (int16_t *)dest;
+      int16_t *s = (int16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED_SHORT) {
+      uint16_t *d = (uint16_t *)dest;
+      uint16_t *s = (uint16_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_INT) {
+      int *d = (int *)dest;
+      int *s = (int *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED) {
+      unsigned *d = (unsigned *)dest;
+      unsigned *s = (unsigned *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_LONG) {
+      int64_t *d = (int64_t *)dest;
+      int64_t *s = (int64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_UNSIGNED_LONG) {
+      uint64_t *d = (uint64_t *)dest;
+      uint64_t *s = (uint64_t *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_FLOAT) {
+      float *d = (float *)dest;
+      float *s = (float *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_DOUBLE) {
+      double *d = (double *)dest;
+      double *s = (double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_LONG_DOUBLE) {
+      long double *d = (long double *)dest;
+      long double *s = (long double *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    } else if (datatype == MPI_C_BOOL) {
+      bool *d = (bool *)dest;
+      bool *s = (bool *)src;
+      for (int i = 0; i < count; i++) {
+        d[i] = std::min(d[i], s[i]);
+      }
+    }
+  }
 }
 
-inline void GetSizeOf2(MPI_Datatype type, int& size){
+inline void GetSizeOf2(MPI_Datatype type, int &size) {
   int res = 4;
   if (type == MPI_CHAR) {
     res = sizeof(char);
-  }
-  else if (type == MPI_UNSIGNED_CHAR) {
+  } else if (type == MPI_UNSIGNED_CHAR) {
     res = sizeof(unsigned char);
   } else if (type == MPI_SHORT) {
     res = sizeof(int16_t);
@@ -254,8 +336,7 @@ MPI_Datatype GetMPIDatatype() {
   return res;
 }
 
-inline int MPIAPI MPI_MyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
-{
+inline int MPI_MyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
   int proc_num = 0;
   int proc_rank = 0;
   MPI_Comm_size(comm, &proc_num);
@@ -265,31 +346,31 @@ inline int MPIAPI MPI_MyAllreduce(const void *sendbuf, void *recvbuf, int count,
   int data_size = count * type_size;
   MPI_Status status;
   memcpy(recvbuf, sendbuf, data_size);
-  void* tempbuf = malloc(data_size);
-  
+  void *tempbuf = malloc(data_size);
+
   int parent = (proc_rank - 1) / 2;
   int left = 2 * proc_rank + 1;
   int right = 2 * proc_rank + 2;
-    
+
   if (left < proc_num) {
     MPI_Recv(tempbuf, count, datatype, left, 0, comm, &status);
     operation(recvbuf, tempbuf, count, datatype, op);
   }
-    
+
   if (right < proc_num) {
     MPI_Recv(tempbuf, count, datatype, right, 0, comm, &status);
     operation(recvbuf, tempbuf, count, datatype, op);
   }
-  
+
   if (proc_rank != 0) {
     MPI_Send(recvbuf, count, datatype, parent, 0, comm);
     MPI_Recv(recvbuf, count, datatype, parent, 1, comm, &status);
   }
-   
+
   if (left < proc_num) {
     MPI_Send(recvbuf, count, datatype, left, 1, comm);
   }
-    
+
   if (right < proc_num) {
     MPI_Send(recvbuf, count, datatype, right, 1, comm);
   }

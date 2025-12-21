@@ -19,7 +19,8 @@ namespace petrov_e_allreduce {
 class PetrovERunFuncAllreduceFindMaxInColumnsMatrix : public ppc::util::BaseRunFuncTests<InType, OutType, TestType> {
  public:
   static std::string PrintTestParam(const TestType &test_param) {
-    return "matrix_" + std::to_string(std::get<0>(test_param)) + "x" + std::to_string(std::get<1>(test_param)) + std::to_string(rand());
+    return "matrix_" + std::to_string(std::get<0>(test_param)) + "x" + std::to_string(std::get<1>(test_param)) +
+           std::to_string(rand());
   }
 
  protected:
@@ -65,10 +66,9 @@ const std::array<TestType, 10> kTestParam = {
     TestType(4, 3, {0.0034, DBL_MAX, 0.0000045, 11, 0.0000000041, 0.000852, 0.1, 0.11, 1, 2, 3, 4},
              {DBL_MAX, 0.11, 4})};
 
-const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<PetrovEMyAllreduceMPI, InType>(
-                                               kTestParam, PPC_SETTINGS_petrov_e_allreduce),
-                                           ppc::util::AddFuncTask<PetrovEAllreduceMPI, InType>(
-                                               kTestParam, PPC_SETTINGS_petrov_e_allreduce));
+const auto kTestTasksList =
+    std::tuple_cat(ppc::util::AddFuncTask<PetrovEMyAllreduceMPI, InType>(kTestParam, PPC_SETTINGS_petrov_e_allreduce),
+                   ppc::util::AddFuncTask<PetrovEAllreduceMPI, InType>(kTestParam, PPC_SETTINGS_petrov_e_allreduce));
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
