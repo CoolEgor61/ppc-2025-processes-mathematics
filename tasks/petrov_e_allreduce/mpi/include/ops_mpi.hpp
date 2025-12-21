@@ -336,7 +336,8 @@ MPI_Datatype GetMPIDatatype() {
   return res;
 }
 
-inline int MPI_MyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
+inline int MPI_MyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op,
+                           MPI_Comm comm) {
   int proc_num = 0;
   int proc_rank = 0;
   MPI_Comm_size(comm, &proc_num);
