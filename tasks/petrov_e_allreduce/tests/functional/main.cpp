@@ -22,7 +22,7 @@ class PetrovERunFuncAllreduceFindMaxInColumnsMatrix : public ppc::util::BaseRunF
   static std::string PrintTestParam(const TestType &test_param) {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, RAND_MAX);
+    std::uniform_int_distribution<> dist(0, RAND_MAX - 1);
     return "matrix_" + std::to_string(std::get<0>(test_param)) + "x" + std::to_string(std::get<1>(test_param)) +
            std::to_string(dist(gen));
   }
