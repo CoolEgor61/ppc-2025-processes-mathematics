@@ -19,8 +19,11 @@ namespace petrov_e_allreduce {
 class PetrovERunFuncAllreduceFindMaxInColumnsMatrix : public ppc::util::BaseRunFuncTests<InType, OutType, TestType> {
  public:
   static std::string PrintTestParam(const TestType &test_param) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, RAND_MAX);
     return "matrix_" + std::to_string(std::get<0>(test_param)) + "x" + std::to_string(std::get<1>(test_param)) +
-           std::to_string(rand());
+           std::to_string(dist(gen));
   }
 
  protected:
