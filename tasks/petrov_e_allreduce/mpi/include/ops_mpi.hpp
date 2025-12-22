@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 #include "petrov_e_allreduce/common/include/common.hpp"
 #include "task/include/task.hpp"
