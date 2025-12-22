@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 
 #include "petrov_e_allreduce/common/include/common.hpp"
 #include "task/include/task.hpp"
@@ -11,7 +13,7 @@
 namespace petrov_e_allreduce {
 
 template <typename T>
-void apply_operation(T *dest, T *src, int count, MPI_Op op) {
+void ApplyOperation(T *dest, T *src, int count, MPI_Op op) {
   int flag = 0;
   if (op == MPI_SUM) {
     flag = 1;
@@ -71,31 +73,31 @@ inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, M
   }
   switch (flag) {
     case 1:
-      apply_operation(static_cast<unsigned char *>(dest), static_cast<unsigned char *>(src), count, op);
+      ApplyOperation(static_cast<unsigned char *>(dest), static_cast<unsigned char *>(src), count, op);
       break;
     case 2:
-      apply_operation(static_cast<char *>(dest), static_cast<char *>(src), count, op);
+      ApplyOperation(static_cast<char *>(dest), static_cast<char *>(src), count, op);
       break;
     case 3:
-      apply_operation(static_cast<short *>(dest), static_cast<short *>(src), count, op);
+      ApplyOperation(static_cast<int16 *>(dest), static_cast<int16 *>(src), count, op);
       break;
     case 4:
-      apply_operation(static_cast<int *>(dest), static_cast<int *>(src), count, op);
+      ApplyOperation(static_cast<int *>(dest), static_cast<int *>(src), count, op);
       break;
     case 5:
-      apply_operation(static_cast<long *>(dest), static_cast<long *>(src), count, op);
+      ApplyOperation(static_cast<int64 *>(dest), static_cast<int64 *>(src), count, op);
       break;
     case 6:
-      apply_operation(static_cast<float *>(dest), static_cast<float *>(src), count, op);
+      ApplyOperation(static_cast<float *>(dest), static_cast<float *>(src), count, op);
       break;
     case 7:
-      apply_operation(static_cast<double *>(dest), static_cast<double *>(src), count, op);
+      ApplyOperation(static_cast<double *>(dest), static_cast<double *>(src), count, op);
       break;
     case 8:
-      apply_operation(static_cast<long double *>(dest), static_cast<long double *>(src), count, op);
+      ApplyOperation(static_cast<int64 double *>(dest), static_cast<int64 double *>(src), count, op);
       break;
     case 9:
-      apply_operation(static_cast<bool *>(dest), static_cast<bool *>(src), count, op);
+      ApplyOperation(static_cast<bool *>(dest), static_cast<bool *>(src), count, op);
       break;
     default:
       break;
@@ -125,7 +127,7 @@ inline void GetSizeOf2(MPI_Datatype type, int &size) {
   } else if (type == MPI_DOUBLE) {
     res = sizeof(double);
   } else if (type == MPI_LONG_DOUBLE) {
-    res = sizeof(long double);
+    res = sizeof(int64 double);
   } else if (type == MPI_C_BOOL) {
     res = sizeof(bool);
   }
@@ -155,7 +157,7 @@ MPI_Datatype GetMPIDatatype() {
     res = MPI_FLOAT;
   } else if (std::is_same_v<MatrixElemType, double>) {
     res = MPI_DOUBLE;
-  } else if (std::is_same_v<MatrixElemType, long double>) {
+  } else if (std::is_same_v<MatrixElemType, int64 double>) {
     res = MPI_LONG_DOUBLE;
   } else if (std::is_same_v<MatrixElemType, bool>) {
     res = MPI_C_BOOL;
@@ -173,8 +175,8 @@ inline int MpiMyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Dat
   GetSizeOf2(datatype, type_size);
   int data_size = count * type_size;
   MPI_Status status;
-  memcpy(recvbuf, sendbuf, data_size);
-  void *tempbuf = malloc(data_size);
+  std::vector<char> tempbufvec(data_size);
+  void *tempbuf = tempbuf.data();
 
   int parent = (proc_rank - 1) / 2;
   int left = (2 * proc_rank) + 1;
@@ -203,7 +205,6 @@ inline int MpiMyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Dat
     MPI_Send(recvbuf, count, datatype, right, 1, comm);
   }
 
-  free(tempbuf);
   return MPI_SUCCESS;
 }
 
