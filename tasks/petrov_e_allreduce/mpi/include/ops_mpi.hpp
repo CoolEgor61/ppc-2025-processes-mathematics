@@ -10,268 +10,59 @@
 
 namespace petrov_e_allreduce {
 
+template <typename T>
+void apply_operation(T *dest, T *src, int count, MPI_Op op) {
+  switch (op) {
+    case MPI_SUM:
+      for (int i = 0; i < count; i++) {
+        dest[i] += src[i];
+      }
+      break;
+    case MPI_PROD:
+      for (int i = 0; i < count; i++) {
+        dest[i] *= src[i];
+      }
+      break;
+    case MPI_MAX:
+      for (int i = 0; i < count; i++) {
+        dest[i] = std::max(dest[i], src[i]);
+      }
+      break;
+    case MPI_MIN:
+      for (int i = 0; i < count; i++) {
+        dest[i] = std::min(dest[i], src[i]);
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, MPI_Op op) {
-  // Ops: MPI_SUM, MPI_PROD, MPI_MAX, MPI_MIN
-  if (op == MPI_SUM) {
-    if (datatype == MPI_UNSIGNED_CHAR) {
-      auto *d = static_cast<unsigned char *>(dest);
-      auto *s = static_cast<unsigned char *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_SHORT) {
-      auto *d = static_cast<int16_t *>(dest);
-      auto *s = static_cast<int16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED_SHORT) {
-      auto *d = static_cast<uint16_t *>(dest);
-      auto *s = static_cast<uint16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_INT) {
-      auto *d = static_cast<int *>(dest);
-      auto *s = static_cast<int *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED) {
-      auto *d = static_cast<unsigned *>(dest);
-      auto *s = static_cast<unsigned *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_LONG) {
-      auto *d = static_cast<int64_t *>(dest);
-      auto *s = static_cast<int64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED_LONG) {
-      auto *d = static_cast<uint64_t *>(dest);
-      auto *s = static_cast<uint64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_FLOAT) {
-      auto *d = static_cast<float *>(dest);
-      auto *s = static_cast<float *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_DOUBLE) {
-      auto *d = static_cast<double *>(dest);
-      auto *s = static_cast<double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    } else if (datatype == MPI_LONG_DOUBLE) {
-      auto *d = static_cast<long double *>(dest);
-      auto *s = static_cast<long double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] += s[i];
-      }
-    }
-  } else if (op == MPI_PROD) {
-    if (datatype == MPI_UNSIGNED_CHAR) {
-      auto *d = static_cast<unsigned char *>(dest);
-      auto *s = static_cast<unsigned char *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_SHORT) {
-      auto *d = static_cast<int16_t *>(dest);
-      auto *s = static_cast<int16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED_SHORT) {
-      auto *d = static_cast<uint16_t *>(dest);
-      auto *s = static_cast<uint16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_INT) {
-      auto *d = static_cast<int *>(dest);
-      auto *s = static_cast<int *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED) {
-      auto *d = static_cast<unsigned *>(dest);
-      auto *s = static_cast<unsigned *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_LONG) {
-      auto *d = static_cast<int64_t *>(dest);
-      auto *s = static_cast<int64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_UNSIGNED_LONG) {
-      auto *d = static_cast<uint64_t *>(dest);
-      auto *s = static_cast<uint64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_FLOAT) {
-      auto *d = static_cast<float *>(dest);
-      auto *s = static_cast<float *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_DOUBLE) {
-      auto *d = static_cast<double *>(dest);
-      auto *s = static_cast<double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    } else if (datatype == MPI_LONG_DOUBLE) {
-      auto *d = static_cast<long double *>(dest);
-      auto *s = static_cast<long double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] *= s[i];
-      }
-    }
-  } else if (op == MPI_MAX) {
-    if (datatype == MPI_UNSIGNED_CHAR) {
-      auto *d = static_cast<unsigned char *>(dest);
-      auto *s = static_cast<unsigned char *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_SHORT) {
-      auto *d = static_cast<int16_t *>(dest);
-      auto *s = static_cast<int16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED_SHORT) {
-      auto *d = static_cast<uint16_t *>(dest);
-      auto *s = static_cast<uint16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_INT) {
-      auto *d = static_cast<int *>(dest);
-      auto *s = static_cast<int *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED) {
-      auto *d = static_cast<unsigned *>(dest);
-      auto *s = static_cast<unsigned *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_LONG) {
-      auto *d = static_cast<int64_t *>(dest);
-      auto *s = static_cast<int64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED_LONG) {
-      auto *d = static_cast<uint64_t *>(dest);
-      auto *s = static_cast<uint64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_FLOAT) {
-      auto *d = static_cast<float *>(dest);
-      auto *s = static_cast<float *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_DOUBLE) {
-      auto *d = static_cast<double *>(dest);
-      auto *s = static_cast<double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_LONG_DOUBLE) {
-      auto *d = static_cast<long double *>(dest);
-      auto *s = static_cast<long double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    } else if (datatype == MPI_C_BOOL) {
-      auto *d = static_cast<bool *>(dest);
-      auto *s = static_cast<bool *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::max(d[i], s[i]);
-      }
-    }
-  } else if (op == MPI_MIN) {
-    if (datatype == MPI_UNSIGNED_CHAR) {
-      auto *d = static_cast<unsigned char *>(dest);
-      auto *s = static_cast<unsigned char *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_SHORT) {
-      auto *d = static_cast<int16_t *>(dest);
-      auto *s = static_cast<int16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED_SHORT) {
-      auto *d = static_cast<uint16_t *>(dest);
-      auto *s = static_cast<uint16_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_INT) {
-      auto *d = static_cast<int *>(dest);
-      auto *s = static_cast<int *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED) {
-      auto *d = static_cast<unsigned *>(dest);
-      auto *s = static_cast<unsigned *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_LONG) {
-      auto *d = static_cast<int64_t *>(dest);
-      auto *s = static_cast<int64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_UNSIGNED_LONG) {
-      auto *d = static_cast<uint64_t *>(dest);
-      auto *s = static_cast<uint64_t *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_FLOAT) {
-      auto *d = static_cast<float *>(dest);
-      auto *s = static_cast<float *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_DOUBLE) {
-      auto *d = static_cast<double *>(dest);
-      auto *s = static_cast<double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_LONG_DOUBLE) {
-      auto *d = static_cast<long double *>(dest);
-      auto *s = static_cast<long double *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    } else if (datatype == MPI_C_BOOL) {
-      auto *d = static_cast<bool *>(dest);
-      auto *s = static_cast<bool *>(src);
-      for (int i = 0; i < count; i++) {
-        d[i] = std::min(d[i], s[i]);
-      }
-    }
+  switch (datatype) {
+    case MPI_UNSIGNED_CHAR:
+      apply_operation(static_cast<unsigned char *>(dest), static_cast<unsigned char *>(src), count, op);
+      break;
+    case MPI_CHAR:
+      apply_operation(static_cast<char *>(dest), static_cast<char *>(src), count, op);
+      break;
+    case MPI_SHORT:
+      apply_operation(static_cast<short *>(dest), static_cast<short *>(src), count, op);
+      break;
+    case MPI_INT:
+      apply_operation(static_cast<int *>(dest), static_cast<int *>(src), count, op);
+      break;
+    case MPI_LONG:
+      apply_operation(static_cast<long *>(dest), static_cast<long *>(src), count, op);
+      break;
+    case MPI_FLOAT:
+      apply_operation(static_cast<float *>(dest), static_cast<float *>(src), count, op);
+      break;
+    case MPI_DOUBLE:
+      apply_operation(static_cast<double *>(dest), static_cast<double *>(src), count, op);
+      break;
+    default:
+      break;
   }
 }
 
