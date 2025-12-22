@@ -68,8 +68,6 @@ inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, M
     flag = 7;
   } else if (datatype == MPI_LONG_DOUBLE) {
     flag = 8;
-  } else if (datatype == MPI_C_BOOL) {
-    flag = 9;
   }
   switch (flag) {
     case 1:
@@ -95,9 +93,6 @@ inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, M
       break;
     case 8:
       ApplyOperation(static_cast<long double *>(dest), static_cast<long double *>(src), count, op);
-      break;
-    case 9:
-      ApplyOperation(static_cast<bool *>(dest), static_cast<bool *>(src), count, op);
       break;
     default:
       break;
@@ -128,8 +123,6 @@ inline void GetSizeOf2(MPI_Datatype type, int &size) {
     res = sizeof(double);
   } else if (type == MPI_LONG_DOUBLE) {
     res = sizeof(long double);
-  } else if (type == MPI_C_BOOL) {
-    res = sizeof(bool);
   }
   size = res;
 }
@@ -159,8 +152,6 @@ MPI_Datatype GetMPIDatatype() {
     res = MPI_DOUBLE;
   } else if (std::is_same_v<MatrixElemType, long double>) {
     res = MPI_LONG_DOUBLE;
-  } else if (std::is_same_v<MatrixElemType, bool>) {
-    res = MPI_C_BOOL;
   }
   return res;
 }
@@ -175,6 +166,11 @@ inline int MpiMyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Dat
   GetSizeOf2(datatype, type_size);
   int data_size = count * type_size;
   MPI_Status status;
+  const char *src = static_cast<const char *>(sendbuf);
+  char *dst = static_cast<char *>(recvbuf);
+  for (int i = 0; i < data_size; i++) {
+    dst[i] = src[i];
+  }
   std::vector<char> tempbufvec(data_size);
   void *tempbuf = tempbufvec.data();
 
