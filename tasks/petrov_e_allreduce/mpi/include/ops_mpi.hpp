@@ -176,7 +176,7 @@ inline int MpiMyAllreduce(const void *sendbuf, void *recvbuf, int count, MPI_Dat
   int data_size = count * type_size;
   MPI_Status status;
   std::vector<char> tempbufvec(data_size);
-  void *tempbuf = tempbuf.data();
+  void *tempbuf = tempbufvec.data();
 
   int parent = (proc_rank - 1) / 2;
   int left = (2 * proc_rank) + 1;
