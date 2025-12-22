@@ -79,13 +79,13 @@ inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, M
       ApplyOperation(static_cast<char *>(dest), static_cast<char *>(src), count, op);
       break;
     case 3:
-      ApplyOperation(static_cast<int16 *>(dest), static_cast<int16 *>(src), count, op);
+      ApplyOperation(static_cast<int16_t *>(dest), static_cast<int16_t *>(src), count, op);
       break;
     case 4:
       ApplyOperation(static_cast<int *>(dest), static_cast<int *>(src), count, op);
       break;
     case 5:
-      ApplyOperation(static_cast<int64 *>(dest), static_cast<int64 *>(src), count, op);
+      ApplyOperation(static_cast<int64_t *>(dest), static_cast<int64_t *>(src), count, op);
       break;
     case 6:
       ApplyOperation(static_cast<float *>(dest), static_cast<float *>(src), count, op);
@@ -94,7 +94,7 @@ inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, M
       ApplyOperation(static_cast<double *>(dest), static_cast<double *>(src), count, op);
       break;
     case 8:
-      ApplyOperation(static_cast<int64 double *>(dest), static_cast<int64 double *>(src), count, op);
+      ApplyOperation(static_cast<long double *>(dest), static_cast<long double *>(src), count, op);
       break;
     case 9:
       ApplyOperation(static_cast<bool *>(dest), static_cast<bool *>(src), count, op);
@@ -127,7 +127,7 @@ inline void GetSizeOf2(MPI_Datatype type, int &size) {
   } else if (type == MPI_DOUBLE) {
     res = sizeof(double);
   } else if (type == MPI_LONG_DOUBLE) {
-    res = sizeof(int64 double);
+    res = sizeof(long double);
   } else if (type == MPI_C_BOOL) {
     res = sizeof(bool);
   }
@@ -157,7 +157,7 @@ MPI_Datatype GetMPIDatatype() {
     res = MPI_FLOAT;
   } else if (std::is_same_v<MatrixElemType, double>) {
     res = MPI_DOUBLE;
-  } else if (std::is_same_v<MatrixElemType, int64 double>) {
+  } else if (std::is_same_v<MatrixElemType, long double>) {
     res = MPI_LONG_DOUBLE;
   } else if (std::is_same_v<MatrixElemType, bool>) {
     res = MPI_C_BOOL;
