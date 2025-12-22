@@ -49,27 +49,53 @@ void apply_operation(T *dest, T *src, int count, MPI_Op op) {
 }
 
 inline void Operation(void *dest, void *src, int count, MPI_Datatype datatype, MPI_Op op) {
-  switch (datatype) {
-    case MPI_UNSIGNED_CHAR:
+  int flag = 0;
+  if (datatype == MPI_UNSIGNED_CHAR) {
+    flag = 1;
+  } else if (datatype == MPI_CHAR) {
+    flag = 2;
+  } else if (datatype == MPI_SHORT) {
+    flag = 3;
+  } else if (datatype == MPI_INT) {
+    flag = 4;
+  } else if (datatype == MPI_LONG) {
+    flag = 5;
+  } else if (datatype == MPI_FLOAT) {
+    flag = 6;
+  } else if (datatype == MPI_DOUBLE) {
+    flag = 7;
+  } else if (datatype == MPI_LONG_DOUBLE) {
+    flag = 8;
+  } else if (datatype == MPI_C_BOOL) {
+    flag = 9;
+  }
+  switch (flag) {
+    case 1:
       apply_operation(static_cast<unsigned char *>(dest), static_cast<unsigned char *>(src), count, op);
       break;
-    case MPI_CHAR:
+    case 2:
       apply_operation(static_cast<char *>(dest), static_cast<char *>(src), count, op);
       break;
-    case MPI_SHORT:
+    case 3:
       apply_operation(static_cast<short *>(dest), static_cast<short *>(src), count, op);
       break;
-    case MPI_INT:
+    case 4:
       apply_operation(static_cast<int *>(dest), static_cast<int *>(src), count, op);
       break;
-    case MPI_LONG:
+    case 5:
       apply_operation(static_cast<long *>(dest), static_cast<long *>(src), count, op);
       break;
-    case MPI_FLOAT:
+    case 6:
       apply_operation(static_cast<float *>(dest), static_cast<float *>(src), count, op);
       break;
-    case MPI_DOUBLE:
+    case 7:
       apply_operation(static_cast<double *>(dest), static_cast<double *>(src), count, op);
+      break;
+    case 8:
+      apply_operation(static_cast<long double *>(dest), static_cast<long double *>(src), count, op);
+      break;
+    case 9:
+      apply_operation(static_cast<bool *>(dest), static_cast<bool *>(src), count, op);
       break;
     default:
       break;
