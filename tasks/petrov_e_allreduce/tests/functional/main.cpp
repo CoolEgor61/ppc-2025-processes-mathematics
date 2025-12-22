@@ -3,6 +3,7 @@
 #include <array>
 #include <cfloat>
 #include <cstddef>
+#include <cstdlib>
 #include <random>
 #include <string>
 #include <tuple>
