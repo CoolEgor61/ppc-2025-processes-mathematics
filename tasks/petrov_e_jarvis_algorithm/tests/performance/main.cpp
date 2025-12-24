@@ -8,7 +8,6 @@
 namespace petrov_e_jarvis_algorithm {
 
 class PetrovERunPerfTestJarvis : public ppc::util::BaseRunPerfTests<InType, OutType> {
-  const int kCount_ = 100;
   InType input_data_{};
   OutType output_data_{};
 
