@@ -37,10 +37,10 @@ bool PetrovEJarvisSEQ::RunImpl() {
   GetOutput().clear();
 
   auto &input = GetInput();
-  int n = n;
+  int n = static_cast<int>(input.size());
 
   int mindotindex = 0;
-  for (auto i = 0; i < input.size(); i++) {
+  for (auto i = 0; i < n; i++) {
     if (input[i].second < input[mindotindex].second ||
         (input[i].second == input[mindotindex].second && input[i].first < input[mindotindex].first)) {
       mindotindex = i;
@@ -55,7 +55,7 @@ bool PetrovEJarvisSEQ::RunImpl() {
 
     nextdotindex = -1;
 
-    for (int k = 0; k < input.size(); k++) {
+    for (int k = 0; k < n; k++) {
       if (k == currentdotindex) {
         continue;
       }
