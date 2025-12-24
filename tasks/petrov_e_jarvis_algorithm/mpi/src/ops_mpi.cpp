@@ -44,6 +44,7 @@ bool PetrovEJarvisMPI::RunImpl() {
   GetOutput().clear();
 
   auto &input = GetInput();
+  int n = static_cast<int>(GetInput().size());
 
   int col_num_per_proc = input.size() / proc_num;
   int col_num_wo_proc = input.size() % proc_num;
@@ -74,7 +75,7 @@ bool PetrovEJarvisMPI::RunImpl() {
 
   int mindotindex = 0;
   if (proc_rank == 0) {
-    for (auto i = 0; i < GetInput().size(); i++) {
+    for (auto i = 0; i < n; i++) {
       if (GetInput()[i].second < GetInput()[mindotindex].second ||
           (GetInput()[i].second == GetInput()[mindotindex].second &&
            GetInput()[i].first < GetInput()[mindotindex].first)) {
@@ -180,7 +181,7 @@ bool PetrovEJarvisMPI::RunImpl() {
     GetOutput().assign(s1.begin(), s1.end());
     std::sort(GetOutput().begin(), GetOutput().end());
 
-    buffsize = GetOutput().size();
+    buffsize = static_cast<int>(GetOutput().size());
 
     buffer.resize(2 * buffsize);
     for (int i = 0; i < buffsize; i++) {
@@ -200,7 +201,7 @@ bool PetrovEJarvisMPI::RunImpl() {
   MPI_Bcast(buffer.data(), 2 * buffsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   if (proc_rank != 0) {
-    for (int i = 0; i < GetOutput().size(); i++) {
+    for (int i = 0; i < buffsize; i++) {
       GetOutput()[i] = {buffer[2 * i], buffer[2 * i + 1]};
     }
   }

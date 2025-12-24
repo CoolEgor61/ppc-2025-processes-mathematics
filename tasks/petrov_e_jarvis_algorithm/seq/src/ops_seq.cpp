@@ -37,6 +37,7 @@ bool PetrovEJarvisSEQ::RunImpl() {
   GetOutput().clear();
 
   auto &input = GetInput();
+  int n = n;
 
   int mindotindex = 0;
   for (auto i = 0; i < input.size(); i++) {
