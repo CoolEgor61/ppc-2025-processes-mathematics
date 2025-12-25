@@ -8,9 +8,8 @@
 
 #include "petrov_e_jarvis_algorithm/common/include/common.hpp"
 
-namespace petrov_e_jarvis_algorithm {
-
-static double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2, std::pair<double, double> p3) {
+static double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2,
+                               std::pair<double, double> p3) {
   return ((p2.first - p1.first) * (p3.second - p1.second)) - ((p2.second - p1.second) * (p3.first - p1.first));
 }
 
@@ -30,7 +29,7 @@ static int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
   return mindotindex;
 }
 
-static int FindNextPoint(std::vector<std::pair<double, double>>& points, int currentdotindex) {
+static int FindNextPoint(std::vector<std::pair<double, double>> &points, int currentdotindex) {
   int nextdotindex = -1;
   int n = static_cast<int>(points.size());
 
@@ -49,7 +48,8 @@ static int FindNextPoint(std::vector<std::pair<double, double>>& points, int cur
     if (orientation > 0) {
       nextdotindex = k;
     } else if (std::fabs(orientation) < 1e-10) {
-      if (CountDistance(points[currentdotindex], points[k]) > CountDistance(points[currentdotindex], points[nextdotindex])){
+      if (CountDistance(points[currentdotindex], points[k]) >
+          CountDistance(points[currentdotindex], points[nextdotindex])) {
         nextdotindex = k;
       }
     }
@@ -57,6 +57,8 @@ static int FindNextPoint(std::vector<std::pair<double, double>>& points, int cur
 
   return nextdotindex;
 }
+
+namespace petrov_e_jarvis_algorithm {
 
 PetrovEJarvisSEQ::PetrovEJarvisSEQ(const InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
