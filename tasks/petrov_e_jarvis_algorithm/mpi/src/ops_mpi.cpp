@@ -173,6 +173,7 @@ bool PetrovEJarvisMPI::RunImpl() {
   } while (currentdotindex != mindotindex);
 
   int buffsize = 0;
+  int buffsize2 = 0;
   std::vector<double> buffer;
 
   if (proc_rank == 0) {
