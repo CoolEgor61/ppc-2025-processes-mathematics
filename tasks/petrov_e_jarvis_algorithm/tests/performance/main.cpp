@@ -29,14 +29,14 @@ class PetrovERunPerfTestJarvis : public ppc::util::BaseRunPerfTests<InType, OutT
     double y = 0.;
     if (in1.is_open()) {
       while (in1 >> x >> y) {
-        indata.push_back({x, y});
+        indata.emplace_back(x, y);
       }
       input_data_ = indata;
       in1.close();
     }
     if (in2.is_open()) {
       while (in2 >> x >> y) {
-        ans.push_back({x, y});
+        ans.emplace_back(x, y);
       }
       output_data_ = ans;
       in2.close();

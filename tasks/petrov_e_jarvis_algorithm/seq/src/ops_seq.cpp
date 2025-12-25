@@ -49,8 +49,9 @@ bool PetrovEJarvisSEQ::RunImpl() {
 
   int currentdotindex = mindotindex;
   int nextdotindex = 0;
+  int flag1 = 1;
 
-  do {
+  while (flag1) {
     GetOutput().push_back(input[currentdotindex]);
 
     nextdotindex = -1;
@@ -83,9 +84,11 @@ bool PetrovEJarvisSEQ::RunImpl() {
       }
     }
 
+    if (nextdotindex == mindotindex) {
+      flag1 = 0;
+    }
     currentdotindex = nextdotindex;
-
-  } while (currentdotindex != mindotindex);
+  }
 
   std::set<std::pair<double, double>> s1(GetOutput().begin(), GetOutput().end());
   GetOutput().assign(s1.begin(), s1.end());

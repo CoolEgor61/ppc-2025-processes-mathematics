@@ -87,8 +87,9 @@ bool PetrovEJarvisMPI::RunImpl() {
   int currentdotindex = mindotindex;
   int nextdotindex = 0;
   std::vector<int> proc_points(proc_num);
+  int flag1 = 1;
 
-  do {
+  while (flag1) {
     if (proc_rank == 0) {
       GetOutput().push_back(GetInput()[currentdotindex]);
     }
@@ -168,10 +169,12 @@ bool PetrovEJarvisMPI::RunImpl() {
 
     MPI_Bcast(&nextdotindex, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    if (nextdotindex == mindotindex) {
+      flag1 = 0;
+    }
+
     currentdotindex = nextdotindex;
-
-  } while (currentdotindex != mindotindex);
-
+  }
   int buffsize = 0;
   int buffsize2 = 0;
   std::vector<double> buffer;
@@ -192,6 +195,7 @@ bool PetrovEJarvisMPI::RunImpl() {
   }
 
   MPI_Bcast(&buffsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&buffsize2, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   if (proc_rank != 0) {
     buffer.resize(buffsize2);
