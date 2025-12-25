@@ -51,7 +51,7 @@ bool PetrovEJarvisSEQ::RunImpl() {
   int nextdotindex = 0;
   int flag1 = 1;
 
-  while (flag1) {
+  while (flag1 != 0) {
     GetOutput().push_back(input[currentdotindex]);
 
     nextdotindex = -1;
