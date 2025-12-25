@@ -63,8 +63,8 @@ int FindLocal(std::vector<std::pair<double, double>> &points, int start, int end
 
 int FindNext(std::vector<std::pair<double, double>> &points, std::vector<int> &proc_points, int currentdotindex) {
   int nextdotindex = -1;
-
-  for (auto j = 0; j < proc_points.size(); j++) {
+  int n = static_cast<int>(proc_points.size());
+  for (auto j = 0; j < n; j++) {
     int candidatedot = proc_points[j];
     if (candidatedot == -1 || candidatedot == currentdotindex) {
       continue;
