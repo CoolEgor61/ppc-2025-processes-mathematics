@@ -11,6 +11,87 @@
 
 #include "petrov_e_jarvis_algorithm/common/include/common.hpp"
 
+namespace {
+
+double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2, std::pair<double, double> p3) {
+  return ((p2.first - p1.first) * (p3.second - p1.second)) - ((p2.second - p1.second) * (p3.first - p1.first));
+}
+
+double CountDistance(std::pair<double, double> p1, std::pair<double, double> p2) {
+  return ((p2.first - p1.first) * (p2.first - p1.first)) + ((p2.second - p1.second) * (p2.second - p1.second));
+}
+
+int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
+  int mindotindex = 0;
+  int n = static_cast<int>(points.size());
+  for (int i = 1; i < n; i++) {
+    if (points[i].second < points[mindotindex].second ||
+        (points[i].second == points[mindotindex].second && points[i].first < points[mindotindex].first)) {
+      mindotindex = i;
+    }
+  }
+  return mindotindex;
+}
+
+int FindLocal(std::vector<std::pair<double, double>> &points, int start, int end, int currentdotindex) {
+  int localnextdotindex = -1;
+
+  for (int k = start; k < end; k++) {
+    if (k == currentdotindex) {
+      continue;
+    }
+
+    if (localnextdotindex == -1) {
+      localnextdotindex = k;
+      continue;
+    }
+
+    double orientation = CountOrientation(points[currentdotindex], points[localnextdotindex], points[k]);
+
+    if (orientation > 0) {
+      localnextdotindex = k;
+    } else if (std::fabs(orientation) < 1e-10) {
+      if (CountDistance(points[currentdotindex], points[k]) >
+          CountDistance(points[currentdotindex], points[localnextdotindex])) {
+        localnextdotindex = k;
+      }
+    }
+  }
+
+  return localnextdotindex;
+}
+
+int FindNext(std::vector<std::pair<double, double>> &points, std::vector<int> &proc_points, int currentdotindex) {
+  int nextdotindex = -1;
+
+  for (int j = 0; j < proc_points.size(); j++) {
+    int candidatedot = proc_points[j];
+    if (candidatedot == -1 || candidatedot == currentdotindex) {
+      continue;
+    }
+
+    if (nextdotindex == -1) {
+      nextdotindex = candidatedot;
+      continue;
+    }
+
+    double orientation = CountOrientation(points[currentdotindex], points[nextdotindex], points[candidatedot]);
+
+    if (orientation > 0) {
+      nextdotindex = candidatedot;
+    } else if (std::fabs(orientation) < 1e-10) {
+      if (CountDistance(points[currentdotindex], points[candidatedot]) >
+          CountDistance(points[currentdotindex], points[nextdotindex])) {
+        nextdotindex = candidatedot;
+      }
+    }
+  }
+
+  return nextdotindex;
+}
+
+}  // namespace
+
 namespace petrov_e_jarvis_algorithm {
 
 PetrovEJarvisMPI::PetrovEJarvisMPI(const InType &in) {
@@ -71,17 +152,9 @@ bool PetrovEJarvisMPI::RunImpl() {
   MPI_Scatter(start.data(), 1, MPI_INT, &proc_start, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Scatter(end.data(), 1, MPI_INT, &proc_end, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-  int local_points = proc_end - proc_start;
-
   int mindotindex = 0;
   if (proc_rank == 0) {
-    for (auto i = 0; i < n; i++) {
-      if (GetInput()[i].second < GetInput()[mindotindex].second ||
-          (GetInput()[i].second == GetInput()[mindotindex].second &&
-           GetInput()[i].first < GetInput()[mindotindex].first)) {
-        mindotindex = i;
-      }
-    }
+    mindotindex = FindFirstPoint(input);
   }
   MPI_Bcast(&mindotindex, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -97,75 +170,12 @@ bool PetrovEJarvisMPI::RunImpl() {
 
     MPI_Bcast(&currentdotindex, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    int localnextdotindex = -1;
-
-    if (local_points > 0) {
-      for (int k = proc_start; k < proc_end; k++) {
-        if (k == currentdotindex) {
-          continue;
-        }
-
-        if (localnextdotindex == -1) {
-          localnextdotindex = k;
-          continue;
-        }
-
-        double x1 = input[k].first - input[currentdotindex].first;
-        double y1 = input[k].second - input[currentdotindex].second;
-        double x2 = input[localnextdotindex].first - input[currentdotindex].first;
-        double y2 = input[localnextdotindex].second - input[currentdotindex].second;
-
-        double orientation = (x1 * y2) - (y1 * x2);
-
-        if (orientation > 0) {
-          localnextdotindex = k;
-        } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-          double dist1 = (x1 * x1) + (y1 * y1);
-          double dist2 = (x2 * x2) + (y2 * y2);
-          if (dist1 > dist2) {
-            localnextdotindex = k;
-          }
-        }
-      }
-    }
+    int localnextdotindex = FindLocal(input, proc_start, proc_end, currentdotindex);
 
     MPI_Gather(&localnextdotindex, 1, MPI_INT, proc_points.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (proc_rank == 0) {
-      nextdotindex = -1;
-
-      for (auto j = 0; j < proc_num; j++) {
-        int candidatedot = proc_points[j];
-        if (candidatedot == -1) {
-          continue;
-        }
-
-        if (nextdotindex == -1) {
-          nextdotindex = candidatedot;
-          continue;
-        }
-
-        if (candidatedot == currentdotindex) {
-          continue;
-        }
-
-        double x1 = input[candidatedot].first - input[currentdotindex].first;
-        double y1 = input[candidatedot].second - input[currentdotindex].second;
-        double x2 = input[nextdotindex].first - input[currentdotindex].first;
-        double y2 = input[nextdotindex].second - input[currentdotindex].second;
-
-        double orientation = (x1 * y2) - (y1 * x2);
-
-        if (orientation > 0) {
-          nextdotindex = candidatedot;
-        } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-          double dist1 = (x1 * x1) + (y1 * y1);
-          double dist2 = (x2 * x2) + (y2 * y2);
-          if (dist1 > dist2) {
-            nextdotindex = candidatedot;
-          }
-        }
-      }
+      nextdotindex = FindNext(input, proc_points, currentdotindex);
     }
 
     MPI_Bcast(&nextdotindex, 1, MPI_INT, 0, MPI_COMM_WORLD);
