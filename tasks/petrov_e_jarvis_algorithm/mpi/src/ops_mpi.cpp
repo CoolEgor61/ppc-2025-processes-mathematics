@@ -24,7 +24,7 @@ double CountDistance(std::pair<double, double> p1, std::pair<double, double> p2)
 int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
   int mindotindex = 0;
   int n = static_cast<int>(points.size());
-  for (int i = 1; i < n; i++) {
+  for (auto i = 1; i < n; i++) {
     if (points[i].second < points[mindotindex].second ||
         (points[i].second == points[mindotindex].second && points[i].first < points[mindotindex].first)) {
       mindotindex = i;
@@ -36,7 +36,7 @@ int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
 int FindLocal(std::vector<std::pair<double, double>> &points, int start, int end, int currentdotindex) {
   int localnextdotindex = -1;
 
-  for (int k = start; k < end; k++) {
+  for (auto k = start; k < end; k++) {
     if (k == currentdotindex) {
       continue;
     }
@@ -64,7 +64,7 @@ int FindLocal(std::vector<std::pair<double, double>> &points, int start, int end
 int FindNext(std::vector<std::pair<double, double>> &points, std::vector<int> &proc_points, int currentdotindex) {
   int nextdotindex = -1;
 
-  for (int j = 0; j < proc_points.size(); j++) {
+  for (auto j = 0; j < proc_points.size(); j++) {
     int candidatedot = proc_points[j];
     if (candidatedot == -1 || candidatedot == currentdotindex) {
       continue;
