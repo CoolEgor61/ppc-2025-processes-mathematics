@@ -113,7 +113,7 @@ void BroadcastToAll(int proc_rank, std::vector<std::pair<double, double>> &outpu
   if (proc_rank == 0) {
     std::set<std::pair<double, double>> s1(output.begin(), output.end());
     output.assign(s1.begin(), s1.end());
-    std::ranges::sort(output)
+    std::ranges::sort(output);
 
     buffsize = static_cast<int>(output.size());
     buffsize2 = 2 * static_cast<int>(output.size());
