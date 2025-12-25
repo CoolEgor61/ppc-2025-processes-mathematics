@@ -10,15 +10,15 @@
 
 namespace petrov_e_jarvis_algorithm {
 
-double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2, std::pair<double, double> p3) {
-  return (p2.first - p1.first) * (p3.second - p1.second) - (p2.second - p1.second) * (p3.first - p1.first);
+static double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2, std::pair<double, double> p3) {
+  return ((p2.first - p1.first) * (p3.second - p1.second)) - ((p2.second - p1.second) * (p3.first - p1.first));
 }
 
-double CountDistance(std::pair<double, double> p1, std::pair<double, double> p2) {
-  return (p2.first - p1.first) * (p2.first - p1.first) + (p2.second - p1.second) * (p2.second - p1.second);
+static double CountDistance(std::pair<double, double> p1, std::pair<double, double> p2) {
+  return ((p2.first - p1.first) * (p2.first - p1.first)) + ((p2.second - p1.second) * (p2.second - p1.second));
 }
 
-int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
+static int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
   int mindotindex = 0;
   int n = static_cast<int>(points.size());
   for (int i = 1; i < n; i++) {
@@ -28,6 +28,34 @@ int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
     }
   }
   return mindotindex;
+}
+
+static int FindNextPoint(std::vector<std::pair<double, double>>& points, int currentdotindex) {
+  int nextdotindex = -1;
+  int n = static_cast<int>(points.size());
+
+  for (int k = 0; k < n; k++) {
+    if (k == currentdotindex) {
+      continue;
+    }
+
+    if (nextdotindex == -1) {
+      nextdotindex = k;
+      continue;
+    }
+
+    double orientation = CountOrientation(points[currentdotindex], points[nextdotindex], points[k]);
+
+    if (orientation > 0) {
+      nextdotindex = k;
+    } else if (std::fabs(orientation) < 1e-10) {
+      if (CountDistance(points[currentdotindex], points[k]) > CountDistance(points[currentdotindex], points[nextdotindex])){
+        nextdotindex = k;
+      }
+    }
+  }
+
+  return nextdotindex;
 }
 
 PetrovEJarvisSEQ::PetrovEJarvisSEQ(const InType &in) {
@@ -56,7 +84,6 @@ bool PetrovEJarvisSEQ::RunImpl() {
   GetOutput().clear();
 
   auto &input = GetInput();
-  int n = static_cast<int>(input.size());
 
   int mindotindex = FindFirstPoint(input);
 
@@ -67,29 +94,7 @@ bool PetrovEJarvisSEQ::RunImpl() {
   while (flag1 != 0) {
     GetOutput().push_back(input[currentdotindex]);
 
-    nextdotindex = -1;
-
-    for (int k = 0; k < n; k++) {
-      if (k == currentdotindex) {
-        continue;
-      }
-
-      if (nextdotindex == -1) {
-        nextdotindex = k;
-        continue;
-      }
-
-      double orientation = CountOrientation(input[currentdotindex], input[nextdotindex], input[k]);
-
-      if (orientation > 0) {
-        nextdotindex = k;
-      } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-        if (CountDistance(input[currentdotindex], input[k]) >
-            CountDistance(input[currentdotindex], input[nextdotindex])) {
-          nextdotindex = k;
-        }
-      }
-    }
+    nextdotindex = FindNextPoint(input, currentdotindex);
 
     if (nextdotindex == mindotindex) {
       flag1 = 0;
