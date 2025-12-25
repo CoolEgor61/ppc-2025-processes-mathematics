@@ -90,6 +90,59 @@ int FindNext(std::vector<std::pair<double, double>> &points, std::vector<int> &p
   return nextdotindex;
 }
 
+void CountDistribution(int n, int proc_num, std::vector<int> &start, std::vector<int> &end) {
+  int col_num_per_proc = n / proc_num;
+  int col_num_wo_proc = n % proc_num;
+  int flag = 0;
+  for (auto i = 0; i < proc_num; i++) {
+    if (i < col_num_wo_proc) {
+      flag = 1;
+    } else {
+      flag = 0;
+    }
+    start[i] = (i * col_num_per_proc) + std::min(i, col_num_wo_proc);
+    end[i] = start[i] + col_num_per_proc + flag;
+  }
+}
+
+void BroadcastToAll(int proc_rank, std::vector<std::pair<double, double>> &output) {
+  int buffsize = 0;
+  int buffsize2 = 0;
+  std::vector<double> buffer;
+
+  if (proc_rank == 0) {
+    std::set<std::pair<double, double>> s1(output.begin(), output.end());
+    output.assign(s1.begin(), s1.end());
+    std::sort(output.begin(), output.end());
+
+    buffsize = static_cast<int>(output.size());
+    buffsize2 = 2 * static_cast<int>(output.size());
+
+    buffer.resize(buffsize2);
+    for (int i = 0; i < buffsize; i++) {
+      buffer[static_cast<int64_t>(2) * i] = output[i].first;
+      buffer[(2 * i) + 1] = output[i].second;
+    }
+  }
+
+  MPI_Bcast(&buffsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&buffsize2, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (proc_rank != 0) {
+    buffer.resize(buffsize2);
+    output.clear();
+    output.resize(buffsize);
+  }
+
+  MPI_Bcast(buffer.data(), buffsize2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  if (proc_rank != 0) {
+    for (int i = 0; i < buffsize; i++) {
+      output[i] = {buffer[static_cast<int64_t>(2) * i], buffer[(2 * i) + 1]};
+    }
+  }
+}
+
 }  // namespace
 
 namespace petrov_e_jarvis_algorithm {
@@ -127,10 +180,6 @@ bool PetrovEJarvisMPI::RunImpl() {
   auto &input = GetInput();
   int n = static_cast<int>(GetInput().size());
 
-  int col_num_per_proc = n / proc_num;
-  int col_num_wo_proc = n % proc_num;
-  int flag = 0;
-
   std::vector<int> start(proc_num);
   std::vector<int> end(proc_num);
 
@@ -138,15 +187,7 @@ bool PetrovEJarvisMPI::RunImpl() {
   int proc_end = 0;
 
   if (proc_rank == 0) {
-    for (auto i = 0; i < proc_num; i++) {
-      if (i < col_num_wo_proc) {
-        flag = 1;
-      } else {
-        flag = 0;
-      }
-      start[i] = (i * col_num_per_proc) + std::min(i, col_num_wo_proc);
-      end[i] = start[i] + col_num_per_proc + flag;
-    }
+    CountDistribution(n, proc_num, start, end);
   }
 
   MPI_Scatter(start.data(), 1, MPI_INT, &proc_start, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -186,41 +227,9 @@ bool PetrovEJarvisMPI::RunImpl() {
 
     currentdotindex = nextdotindex;
   }
-  int buffsize = 0;
-  int buffsize2 = 0;
-  std::vector<double> buffer;
 
-  if (proc_rank == 0) {
-    std::set<std::pair<double, double>> s1(GetOutput().begin(), GetOutput().end());
-    GetOutput().assign(s1.begin(), s1.end());
-    std::sort(GetOutput().begin(), GetOutput().end());
-
-    buffsize = static_cast<int>(GetOutput().size());
-    buffsize2 = 2 * static_cast<int>(GetOutput().size());
-
-    buffer.resize(buffsize2);
-    for (int i = 0; i < buffsize; i++) {
-      buffer[static_cast<int64_t>(2) * i] = GetOutput()[i].first;
-      buffer[(2 * i) + 1] = GetOutput()[i].second;
-    }
-  }
-
-  MPI_Bcast(&buffsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(&buffsize2, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-  if (proc_rank != 0) {
-    buffer.resize(buffsize2);
-    GetOutput().clear();
-    GetOutput().resize(buffsize);
-  }
-
-  MPI_Bcast(buffer.data(), buffsize2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-  if (proc_rank != 0) {
-    for (int i = 0; i < buffsize; i++) {
-      GetOutput()[i] = {buffer[static_cast<int64_t>(2) * i], buffer[(2 * i) + 1]};
-    }
-  }
+  auto &output = GetOutput();
+  BroadcastToAll(proc_rank, output);
 
   return !GetOutput().empty();
 }
