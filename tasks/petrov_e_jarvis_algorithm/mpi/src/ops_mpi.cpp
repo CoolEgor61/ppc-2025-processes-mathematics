@@ -189,7 +189,7 @@ bool PetrovEJarvisMPI::RunImpl() {
 
     buffer.resize(buffsize2);
     for (int i = 0; i < buffsize; i++) {
-      buffer[static_cast<long>(2) * i] = GetOutput()[i].first;
+      buffer[static_cast<int64_t>(2) * i] = GetOutput()[i].first;
       buffer[(2 * i) + 1] = GetOutput()[i].second;
     }
   }
@@ -207,7 +207,7 @@ bool PetrovEJarvisMPI::RunImpl() {
 
   if (proc_rank != 0) {
     for (int i = 0; i < buffsize; i++) {
-      GetOutput()[i] = {buffer[static_cast<long>(2) * i], buffer[(2 * i) + 1]};
+      GetOutput()[i] = {buffer[static_cast<int64_t>(2) * i], buffer[(2 * i) + 1]};
     }
   }
 

@@ -7,9 +7,28 @@
 #include <vector>
 
 #include "petrov_e_jarvis_algorithm/common/include/common.hpp"
-#include "util/include/util.hpp"
 
 namespace petrov_e_jarvis_algorithm {
+
+double CountOrientation(std::pair<double, double> p1, std::pair<double, double> p2, std::pair<double, double> p3) {
+  return (p2.first - p1.first) * (p3.second - p1.second) - (p2.second - p1.second) * (p3.first - p1.first);
+}
+
+double CountDistance(std::pair<double, double> p1, std::pair<double, double> p2) {
+  return (p2.first - p1.first) * (p2.first - p1.first) + (p2.second - p1.second) * (p2.second - p1.second);
+}
+
+int FindFirstPoint(std::vector<std::pair<double, double>> &points) {
+  int mindotindex = 0;
+  int n = static_cast<int>(points.size());
+  for (int i = 1; i < n; i++) {
+    if (points[i].second < points[mindotindex].second ||
+        (points[i].second == points[mindotindex].second && points[i].first < points[mindotindex].first)) {
+      mindotindex = i;
+    }
+  }
+  return mindotindex;
+}
 
 PetrovEJarvisSEQ::PetrovEJarvisSEQ(const InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
@@ -39,13 +58,7 @@ bool PetrovEJarvisSEQ::RunImpl() {
   auto &input = GetInput();
   int n = static_cast<int>(input.size());
 
-  int mindotindex = 0;
-  for (auto i = 0; i < n; i++) {
-    if (input[i].second < input[mindotindex].second ||
-        (input[i].second == input[mindotindex].second && input[i].first < input[mindotindex].first)) {
-      mindotindex = i;
-    }
-  }
+  int mindotindex = FindFirstPoint(input);
 
   int currentdotindex = mindotindex;
   int nextdotindex = 0;
@@ -66,19 +79,13 @@ bool PetrovEJarvisSEQ::RunImpl() {
         continue;
       }
 
-      double x1 = input[k].first - input[currentdotindex].first;
-      double y1 = input[k].second - input[currentdotindex].second;
-      double x2 = input[nextdotindex].first - input[currentdotindex].first;
-      double y2 = input[nextdotindex].second - input[currentdotindex].second;
-
-      double orientation = (x1 * y2) - (y1 * x2);
+      double orientation = CountOrientation(input[currentdotindex], input[nextdotindex], input[k]);
 
       if (orientation > 0) {
         nextdotindex = k;
       } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-        double dist1 = (x1 * x1) + (y1 * y1);
-        double dist2 = (x2 * x2) + (y2 * y2);
-        if (dist1 > dist2) {
+        if (CountDistance(input[currentdotindex], input[k]) >
+            CountDistance(input[currentdotindex], input[nextdotindex])) {
           nextdotindex = k;
         }
       }

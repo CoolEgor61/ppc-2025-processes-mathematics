@@ -11,6 +11,7 @@
 #include "petrov_e_jarvis_algorithm/mpi/include/ops_mpi.hpp"
 #include "petrov_e_jarvis_algorithm/seq/include/ops_seq.hpp"
 #include "util/include/func_test_util.hpp"
+#include "util/include/util.hpp"
 
 namespace petrov_e_jarvis_algorithm {
 
