@@ -1,15 +1,22 @@
 #include <gtest/gtest.h>
 
+#include <fstream>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "petrov_e_jarvis_algorithm/common/include/common.hpp"
 #include "petrov_e_jarvis_algorithm/mpi/include/ops_mpi.hpp"
 #include "petrov_e_jarvis_algorithm/seq/include/ops_seq.hpp"
 #include "util/include/perf_test_util.hpp"
+#include "util/include/util.hpp"
 
 namespace petrov_e_jarvis_algorithm {
 
 class PetrovERunPerfTestJarvis : public ppc::util::BaseRunPerfTests<InType, OutType> {
-  InType input_data_{};
-  OutType output_data_{};
+  InType input_data_;
+  OutType output_data_;
 
   void SetUp() override {
     std::string abs_path1 = ppc::util::GetAbsoluteTaskPath(PPC_ID_petrov_e_jarvis_algorithm, "perf_test.txt");
@@ -18,17 +25,18 @@ class PetrovERunPerfTestJarvis : public ppc::util::BaseRunPerfTests<InType, OutT
     std::ifstream in2(abs_path2);
     std::vector<std::pair<double, double>> indata;
     std::vector<std::pair<double, double>> ans;
-    double x = 0., y = 0.;
+    double x = 0.;
+    double y = 0.;
     if (in1.is_open()) {
       while (in1 >> x >> y) {
-        indata.push_back({x, y});
+        indata.emplace_back({x, y});
       }
       input_data_ = indata;
       in1.close();
     }
     if (in2.is_open()) {
       while (in2 >> x >> y) {
-        ans.push_back({x, y});
+        ans.emplace_back({x, y});
       }
       output_data_ = ans;
       in2.close();

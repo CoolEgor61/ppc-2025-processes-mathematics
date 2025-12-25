@@ -18,11 +18,11 @@ PetrovEJarvisSEQ::PetrovEJarvisSEQ(const InType &in) {
 }
 
 bool PetrovEJarvisSEQ::ValidationImpl() {
-  return (GetInput().size() >= 3) && (GetOutput().size() == 0);
+  return (GetInput().size() >= 3) && (GetOutput().empty());
 }
 
 bool PetrovEJarvisSEQ::PreProcessingImpl() {
-  return (GetInput().size() >= 3) && (GetOutput().size() == 0);
+  return (GetInput().size() >= 3) && (GetOutput().empty());
 }
 
 bool PetrovEJarvisSEQ::RunImpl() {
@@ -70,13 +70,13 @@ bool PetrovEJarvisSEQ::RunImpl() {
       double x2 = input[nextdotindex].first - input[currentdotindex].first;
       double y2 = input[nextdotindex].second - input[currentdotindex].second;
 
-      double orientation = x1 * y2 - y1 * x2;
+      double orientation = (x1 * y2) - (y1 * x2);
 
       if (orientation > 0) {
         nextdotindex = k;
       } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-        double dist1 = x1 * x1 + y1 * y1;
-        double dist2 = x2 * x2 + y2 * y2;
+        double dist1 = (x1 * x1) + (y1 * y1);
+        double dist2 = (x2 * x2) + (y2 * y2);
         if (dist1 > dist2) {
           nextdotindex = k;
         }
@@ -91,11 +91,11 @@ bool PetrovEJarvisSEQ::RunImpl() {
   GetOutput().assign(s1.begin(), s1.end());
   std::sort(GetOutput().begin(), GetOutput().end());
 
-  return GetOutput().size() > 0;
+  return !GetOutput().empty();
 }
 
 bool PetrovEJarvisSEQ::PostProcessingImpl() {
-  return GetOutput().size() > 0;
+  return !GetOutput().empty();
 }
 
 }  // namespace petrov_e_jarvis_algorithm

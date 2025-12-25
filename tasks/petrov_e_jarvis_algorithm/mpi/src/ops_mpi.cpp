@@ -2,14 +2,13 @@
 
 #include <mpi.h>
 
+#include <algorithm>
 #include <cmath>
-#include <numeric>
 #include <set>
 #include <utility>
 #include <vector>
 
 #include "petrov_e_jarvis_algorithm/common/include/common.hpp"
-#include "util/include/util.hpp"
 
 namespace petrov_e_jarvis_algorithm {
 
@@ -20,11 +19,11 @@ PetrovEJarvisMPI::PetrovEJarvisMPI(const InType &in) {
 }
 
 bool PetrovEJarvisMPI::ValidationImpl() {
-  return (GetInput().size() >= 3) && (GetOutput().size() == 0);
+  return (GetInput().size() >= 3) && (GetOutput().empty());
 }
 
 bool PetrovEJarvisMPI::PreProcessingImpl() {
-  return (GetInput().size() >= 3) && (GetOutput().size() == 0);
+  return (GetInput().size() >= 3) && (GetOutput().empty());
 }
 
 bool PetrovEJarvisMPI::RunImpl() {
@@ -46,8 +45,8 @@ bool PetrovEJarvisMPI::RunImpl() {
   auto &input = GetInput();
   int n = static_cast<int>(GetInput().size());
 
-  int col_num_per_proc = input.size() / proc_num;
-  int col_num_wo_proc = input.size() % proc_num;
+  int col_num_per_proc = n / proc_num;
+  int col_num_wo_proc = n % proc_num;
   int flag = 0;
 
   std::vector<int> start(proc_num);
@@ -114,13 +113,13 @@ bool PetrovEJarvisMPI::RunImpl() {
         double x2 = input[localnextdotindex].first - input[currentdotindex].first;
         double y2 = input[localnextdotindex].second - input[currentdotindex].second;
 
-        double orientation = x1 * y2 - y1 * x2;
+        double orientation = (x1 * y2) - (y1 * x2);
 
         if (orientation > 0) {
           localnextdotindex = k;
         } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-          double dist1 = x1 * x1 + y1 * y1;
-          double dist2 = x2 * x2 + y2 * y2;
+          double dist1 = (x1 * x1) + (y1 * y1);
+          double dist2 = (x2 * x2) + (y2 * y2);
           if (dist1 > dist2) {
             localnextdotindex = k;
           }
@@ -153,13 +152,13 @@ bool PetrovEJarvisMPI::RunImpl() {
         double x2 = input[nextdotindex].first - input[currentdotindex].first;
         double y2 = input[nextdotindex].second - input[currentdotindex].second;
 
-        double orientation = x1 * y2 - y1 * x2;
+        double orientation = (x1 * y2) - (y1 * x2);
 
         if (orientation > 0) {
           nextdotindex = candidatedot;
         } else if (std::fabs(orientation) < 1e-10 || std::fabs(orientation) == 0) {
-          double dist1 = x1 * x1 + y1 * y1;
-          double dist2 = x2 * x2 + y2 * y2;
+          double dist1 = (x1 * x1) + (y1 * y1);
+          double dist2 = (x2 * x2) + (y2 * y2);
           if (dist1 > dist2) {
             nextdotindex = candidatedot;
           }
@@ -182,35 +181,36 @@ bool PetrovEJarvisMPI::RunImpl() {
     std::sort(GetOutput().begin(), GetOutput().end());
 
     buffsize = static_cast<int>(GetOutput().size());
+    buffsize2 = 2 * static_cast<int>(GetOutput().size());
 
-    buffer.resize(2 * buffsize);
+    buffer.resize(buffsize2);
     for (int i = 0; i < buffsize; i++) {
       buffer[2 * i] = GetOutput()[i].first;
-      buffer[2 * i + 1] = GetOutput()[i].second;
+      buffer[(2 * i) + 1] = GetOutput()[i].second;
     }
   }
 
   MPI_Bcast(&buffsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   if (proc_rank != 0) {
-    buffer.resize(2 * buffsize);
+    buffer.resize(buffsize2);
     GetOutput().clear();
     GetOutput().resize(buffsize);
   }
 
-  MPI_Bcast(buffer.data(), 2 * buffsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(buffer.data(), buffsize2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   if (proc_rank != 0) {
     for (int i = 0; i < buffsize; i++) {
-      GetOutput()[i] = {buffer[2 * i], buffer[2 * i + 1]};
+      GetOutput()[i] = {buffer[2 * i], buffer[(2 * i) + 1]};
     }
   }
 
-  return GetOutput().size() > 0;
+  return !GetOutput().empty();
 }
 
 bool PetrovEJarvisMPI::PostProcessingImpl() {
-  return GetOutput().size() > 0;
+  return !GetOutput().empty();
 }
 
 }  // namespace petrov_e_jarvis_algorithm

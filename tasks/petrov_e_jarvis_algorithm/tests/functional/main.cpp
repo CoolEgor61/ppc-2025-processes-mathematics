@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
+#include <array>
+#include <cstdlib>
 #include <string>
 #include <tuple>
 #include <utility>
